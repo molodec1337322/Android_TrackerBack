@@ -40,12 +40,19 @@ public class DataSerializer implements IDataFileSerializer {
     }
 
     @Override
-    public void SaveNotes(IUserNotesContainer notes) throws IOException {
-        String json = gson.toJson(notes);
-
-        CheckIsFileCreated();
-        try (PrintWriter in = new PrintWriter(jsonFile)) {
-            in.println(json);
-        }
+    public void SaveNotes(IUserNotesContainer notes) throws IOException{
+        Runnable r = () -> {
+            String json = gson.toJson(notes);
+            try {
+                CheckIsFileCreated();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (PrintWriter in = new PrintWriter(jsonFile)) {
+                in.println(json);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        };
     }
 }
